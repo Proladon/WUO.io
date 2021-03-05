@@ -5,14 +5,12 @@
       v-for="(ordering, index) in OrderMenu.items"
       :key="ordering.username"
     >
-      <input type="text" :value="ordering.username" placeholder="姓名">
-      <!-- <textarea  cols="30" rows="2">餐點</textarea> -->
-      <input type="text" placeholder="餐點">
-      <input type="text" placeholder="備註">
-      <input type="text" placeholder="備註" disabled>
+      <!-- <input type="text" :value="ordering.username" placeholder="姓名"> -->
+      <input  type="text" placeholder="姓名">
+      <textarea  cols="30" rows="2" placeholder="訂購品"></textarea>
+      <textarea  cols="30" rows="2" placeholder="備註"></textarea>
       <span @click="deleteItem(index)">X</span>
     </div>
-    <div class="btn" @click="addNew">+ Add New</div>
   </div>
 </template>
 
@@ -38,15 +36,6 @@ export default defineComponent({
       items: []
     })
 
-    const addNew = (): void => {
-      const ordering = {
-        username: '',
-        ordering: '',
-        ps: '',
-      }
-      OrderMenu.items.push(ordering)
-    }
-
     const deleteItem = (index: number): void => {
       OrderMenu.items.splice(index, 1)
     }
@@ -54,14 +43,16 @@ export default defineComponent({
     return {
       OrderMenu,
       deleteItem,
-      addNew,
     }
   }
 });
 </script>
 
 <style scoped lang="scss">
-input, textarea{
+textarea{
+  // width: 100px;
   border: none;
+  vertical-align: top;
+  resize: vertical;
 }
 </style>

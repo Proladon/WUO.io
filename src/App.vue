@@ -13,5 +13,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-
+html{
+  background-color: rgb(222, 222, 222);
+}
 </style>
