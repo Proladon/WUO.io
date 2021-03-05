@@ -8,18 +8,32 @@ const routes: Array<RouteRecordRaw> = [
     component: Home
   },
   {
+    path: '/create',
+    name: 'Create',
+    component: () => import('../views/Create.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue')
   },
   {
-    path: '/search',
+    path: '/search/',
     name: 'Search',
-    component: () => import('../views/Search.vue')
+    props: true,
+    component: () => import('../views/Search.vue'),
+    children: [
+      {
+        path: ':refKey',
+        props: true,
+        component: () => import('../views/Search.vue'),
+      }
+    ]
   },
   {
-    path: '/guide',
+    path: '/guide/:id',
     name: 'Guide',
+    props: true,
     component: () => import('../views/Guide.vue')
   }
 ]

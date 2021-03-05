@@ -1,13 +1,16 @@
 <template>
-  <div class="ordering-list">
-    <div class="ordering-container"
-      v-for="ordering in orderingList.orderings"
+  <h4>{{title}}</h4>
+  <div class="order-menu">
+    <div class="order-menu-container"
+      v-for="(ordering, index) in OrderMenu.items"
       :key="ordering.username"
     >
       <input type="text" :value="ordering.username" placeholder="姓名">
+      <!-- <textarea  cols="30" rows="2">餐點</textarea> -->
       <input type="text" placeholder="餐點">
       <input type="text" placeholder="備註">
       <input type="text" placeholder="備註" disabled>
+      <span @click="deleteItem(index)">X</span>
     </div>
     <div class="btn" @click="addNew">+ Add New</div>
   </div>
@@ -17,11 +20,12 @@
 import { defineComponent, reactive } from 'vue';
 
 export default defineComponent({
-  name: 'OrderingList',
+  name: 'OrderMenu',
+  props:['title'],
   setup(){
     
-    interface OrderingList{
-      orderings: Array<Ordering>;
+    interface OrderMenu{
+      items: Array<Ordering>;
     }
 
     interface Ordering{
@@ -30,8 +34,8 @@ export default defineComponent({
       ps: string;
     }
 
-    const orderingList: OrderingList = reactive({
-      orderings: []
+    const OrderMenu: OrderMenu = reactive({
+      items: []
     })
 
     const addNew = (): void => {
@@ -40,11 +44,16 @@ export default defineComponent({
         ordering: '',
         ps: '',
       }
-      orderingList.orderings.push(ordering)
+      OrderMenu.items.push(ordering)
+    }
+
+    const deleteItem = (index: number): void => {
+      OrderMenu.items.splice(index, 1)
     }
 
     return {
-      orderingList,
+      OrderMenu,
+      deleteItem,
       addNew,
     }
   }
@@ -52,5 +61,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-
+input, textarea{
+  border: none;
+}
 </style>
