@@ -36,12 +36,13 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, reactive, ref } from 'vue';
-// import axios from 'axios'
+import { useToast } from "vue-toastification";
 import db from '../db'
 
 export default defineComponent({
   name: 'Create',
   setup(){
+    const toast = useToast();
     const orderName = ref<string>('')
     const optionInput = ref<string>('')
     const orderOptions = reactive({
@@ -55,15 +56,20 @@ export default defineComponent({
 
 
     const createOrder = (): void => {
-      
+      if(orderName.value.trim() === ''){
+        toast.error('請輸入訂單名稱')
+        return
+      }
+
       const newOrder = {
         id:'',
         name: orderName.value,
         create: (new Date()).toString(),
         options: orderOptions.options,
       }
+
       const order = ordersRef.push(newOrder)
-      orderName.value = ''
+      
       refKey.value = (order.key as string);
 
       const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
@@ -74,6 +80,7 @@ export default defineComponent({
       const option = optionInput.value.trim()
       if (option !== '' && !orderOptions.options.includes(option)) {
         orderOptions.options.push(option)
+        optionInput.value = ''
       }
     }
 
@@ -130,6 +137,7 @@ iframe{
 
 
   .copy-btn, .link-btn{
+    cursor: pointer;
     text-align: center;
     color: white;
     width: 150px;

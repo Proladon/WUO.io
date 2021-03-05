@@ -16,7 +16,7 @@
       <h2>訂單: {{order.data.name}}</h2>
       
       <div class="order-form">
-        <input type="text" v-model="userOrdering.data.username" placeholder="訂購人">
+        <input type="text" v-model="userOrdering.data.username" placeholder="訂購人 (選填)">
         
           <h4>快速選項</h4>
         <div class="options-container" >
@@ -32,12 +32,12 @@
           placeholder="目前不支援選擇數量，請手動標記；例: 奶茶x2"
           ></textarea>
         <br>
-        <textarea  cols="40" rows="4" v-model="userOrdering.data.ps" placeholder="備註"></textarea>
+        <textarea  cols="40" rows="4" v-model="userOrdering.data.ps" placeholder="備註 (選填)"></textarea>
         <div class="update-btn" @click="updateOrder">送出</div>
       </div>
     </div>
 
-    <OrderingInfo v-show="view === 2 && order.data !== ''" 
+    <OrderingInfo v-show="view === 2 " 
       :orderData="order.data" :refKey="inputRefKey" />
   
   </div>
@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, onMounted } from 'vue';
-// import OrderMenu from '@/components/OrderMenu.vue';
+import { useToast } from "vue-toastification";
 import OrderingInfo from '@/components/OrderingInfo.vue';
 import db from '../db'
 
@@ -54,8 +54,9 @@ export default defineComponent({
   props: ['refKey'],
   components: {OrderingInfo},
   setup(props){
+    const toast = useToast()
     const inputRefKey = ref<string>()
-    const view = ref<number>(0)
+    const view = ref<number>(2)
     const userOrdering = reactive({
       data:{
         username:'',
@@ -76,7 +77,6 @@ export default defineComponent({
       db.database().ref('orders/' + inputRefKey.value).on('value', snapshot =>{
         const orderData = snapshot.val()
         order.data = orderData
-        view.value = 1
       })
     }
 
@@ -88,6 +88,10 @@ export default defineComponent({
     }
 
     const updateOrder = (): void => {
+      if(userOrdering.data.ordering.trim() === '') {
+        toast.error('訂購品項請勿留空')
+        return
+      }
       const orderRef = db.database().ref('orders/' + inputRefKey.value)
       orderRef.get().then(snapshot=>{
         if (snapshot.val().orderings) {
@@ -104,12 +108,15 @@ export default defineComponent({
         userOrdering.data.username = ''
         userOrdering.data.ordering = ''
         userOrdering.data.ps = ''
+
+        view.value = 2
       })
     }
 
     onMounted(()=>{
+      if(inputRefKey.value === '') return
       inputRefKey.value = props.refKey
-      searchOrder()
+      if(props.refKey) searchOrder()
     })
     
     return{
@@ -163,8 +170,9 @@ export default defineComponent({
 
  .nav-container{
    display: flex;
-  justify-content: space-around;
+    justify-content: space-around;
    .nav-btn{
+     cursor: pointer;
      text-align: center;
      width: 100%;
      color: white;
@@ -194,10 +202,15 @@ export default defineComponent({
   }
 
 .update-btn{
+  cursor: pointer;
   margin-top: 15px;
   text-align: center;
   padding: 10px;
   border-radius: 5px;
   background: rgb(95, 250, 173);
+
+  &:hover{
+    background: skyblue;
+  }
 }
 </style>

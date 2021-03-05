@@ -12,7 +12,7 @@ import { defineComponent } from 'vue';
 import db from '../db'
 
 export default defineComponent({
-  name: 'Search',
+  name: 'Guide',
   props:['id'],
   components: {},
 });

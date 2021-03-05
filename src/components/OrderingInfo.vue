@@ -3,23 +3,40 @@
        <h2>訂單明細</h2>
        <p>{{orderData.name}}</p>
         <p>{{orderData.create}}</p>
-        <img id="qrcode-img" :src="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/' + refKey" alt="">
+        <img id="qrcode-img" v-if="refKey" :src="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/' + refKey" alt="">
         <hr>
-      <div class="ordering-item" v-for="ordering in orderData.orderings" :key="ordering">
+      <div class="ordering-item" v-for="(ordering, index) in orderData.orderings" :key="ordering">
           <p><strong>{{ordering.username}}</strong></p>
           <span>{{ordering.ordering}}</span>
           <br>
           <span class="notice">備註: {{ordering.ps}}</span>
-          <span class="delete">×</span>
+          <span class="delete" @click="removeOrdering(index)">×</span>
       </div>
    </div>
 </template>
 
-<script>
-   export default {
+<script lang="ts">
+import {defineComponent} from 'vue'
+import db from '../db'
+   export default defineComponent({
        name: 'OrderingInfo',
-       props: ['orderData', 'refKey']
-   }
+       props: ['orderData', 'refKey'],
+       setup(props){
+
+           const removeOrdering = (index: number): void => {
+               const remove = confirm('確定刪除此筆訂購嗎')
+               if(remove){
+                   const orderRef = db.database().ref('orders/'+ props.refKey)
+                   const data = props.orderData.orderings
+                   data.splice(index, 1)
+                   orderRef.update({orderings: data})
+               }
+           }
+           return{
+               removeOrdering,
+           }
+       }
+   })
 </script>
 
 <style scoped lang="scss">
