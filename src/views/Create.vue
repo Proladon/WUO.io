@@ -1,51 +1,61 @@
 <template>
-  <div class="home">
+  <div id="create">
     
-    <div class="quick-order">
-      <h2>訂單名稱</h2>
+    <div class="quick-order" v-if="refKey === '' ">
+      <h2>訂單建立</h2>
       <input type="text" v-model="orderName" placeholder="訂單名稱">
-      <hr>
 
-      <p>訂購選項</p>
-      <input type="text" v-model="optionInput" @keypress.enter="addOption">
+      <p><strong>建立快速選項</strong></p>
+      <input type="text" 
+        v-model="optionInput" 
+        placeholder="品項名稱"
+        @keypress.enter="addOption"
+      >
+      
       <div class="ordering-options" 
         v-for="(option, index) in orderOptions.options" :key="option">
-        <p>{{option}} <span @click="removeOption(index)">X</span></p>
-        
+        <p>{{option}} </p>
+        <span class="remove-btn" @click="removeOption(index)">×</span>
       </div>
       
-      <div class="btn action" @click="createOrder">創建訂單</div>
+      <div class="create-btn" @click="createOrder">創建訂單</div>
     </div>
 
+    <div class="share" v-if="refKey !== '' ">
+      <img :src="qrcodeUrl">
 
-    <div class="share-url">
-      <p>https://www.github.io/wuo.io/#/search/{{refKey}}</p>
-      <div class="copy-btn"></div>
+      <div class="copy-btn">📑 複製連結</div>
+      <p class="link-btn" @click="$router.push('/search/'+refKey)"><strong>前往訂單 ></strong></p>
+
     </div>
   
   </div>
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, reactive, ref } from 'vue';
+// import axios from 'axios'
 import db from '../db'
 
 export default defineComponent({
-  name: 'Home',
-  components: {
-  },
+  name: 'Create',
   setup(){
     const orderName = ref<string>('')
     const optionInput = ref<string>('')
     const orderOptions = reactive({
       options: Array<string>()
     })
+    
     const refKey = ref<string>('')
+    const qrcodeUrl =ref<string>('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/6d391369321565.5b7d0d570e829.gif')
     
     const ordersRef = db.database().ref('orders')
 
 
     const createOrder = (): void => {
+      
       const newOrder = {
         id:'',
         name: orderName.value,
@@ -54,8 +64,10 @@ export default defineComponent({
       }
       const order = ordersRef.push(newOrder)
       orderName.value = ''
+      refKey.value = (order.key as string);
 
-      refKey.value = (order.key as string)
+      const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
+      qrcodeUrl.value =  base + refKey.value
     }
 
     const addOption = (): void => {
@@ -70,7 +82,10 @@ export default defineComponent({
     }
 
 
+
+
     return{
+      qrcodeUrl,
       orderName,
       refKey,
       createOrder,
@@ -84,10 +99,88 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-  .quick-order {
-    border: solid 1px #2c3e50;
-    border-radius: 10px;
-    padding: 30px;
-    @include flexVertical($wrap:wrap);
+#create{
+  @include shadow();
+}
+
+iframe{
+  border: none;
+}
+
+.quick-order {
+  @include flexVertical($wrap:wrap);
+  p{
+    margin-bottom: 5px;
   }
+
+  input{
+    width: 50%;
+    padding: 10px;
+  }
+}
+
+.share{
+  justify-content: center;
+  align-items: center;
+  @include flexVertical();
+
+  >img{
+    max-width: 300px;
+  }
+
+
+  .copy-btn, .link-btn{
+    text-align: center;
+    color: white;
+    width: 150px;
+    padding: 10px;
+    margin-top: 30px;
+    background: slategray;
+  }
+  .link-btn{
+    color: slategrey;
+    background: rgb(95, 250, 173);
+  }
+  .copy-btn:active{
+    color: slategray;
+    background:skyblue;
+  }
+  .link-btn:active{
+    color: slategray;
+    background:skyblue;
+  }
+}
+
+.create-btn{
+  margin-top: 30px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  background: rgb(95, 250, 173);
+
+  &:hover{
+    color: slategray;  
+    background: skyblue;
+  }
+}
+
+.ordering-options{
+  margin-top: 10px;
+  >p{
+    margin: 0;
+  }
+  justify-content: space-between;
+  align-items: center;
+  @include flexHorizontal();
+}
+
+.remove-btn{
+  margin-left: 10px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: rgb(240, 97, 123);
+}
 </style>

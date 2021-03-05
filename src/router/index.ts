@@ -31,9 +31,8 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/guide/:id',
+    path: '/guide/',
     name: 'Guide',
-    props: true,
     component: () => import('../views/Guide.vue')
   }
 ]

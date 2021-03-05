@@ -1,6 +1,6 @@
 <template>
 <h1>WUO.io</h1>
-<p>Wut u ordering ?</p>
+<p class="sub-title">Wut u ordering ?</p>
   <Nav />
   <router-view/>
 </template>
@@ -14,6 +14,19 @@ export default defineComponent({
 
 <style lang="scss">
 html{
-  background-color: rgb(222, 222, 222);
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: rgb(255, 255, 255);
+}
+
+body{
+  padding: 20px;
+}
+
+h1{
+  margin: 0;
+}
+.sub-title{
+  margin-top: 5px;
+  margin-bottom: 30px;
 }
 </style>

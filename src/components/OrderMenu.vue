@@ -6,7 +6,7 @@
       :key="ordering.username"
     >
       <!-- <input type="text" :value="ordering.username" placeholder="姓名"> -->
-      <input  type="text" placeholder="姓名">
+      <input  type="text" placeholder="訂購人">
       <textarea  cols="30" rows="2" placeholder="訂購品"></textarea>
       <textarea  cols="30" rows="2" placeholder="備註"></textarea>
       <span @click="deleteItem(index)">X</span>

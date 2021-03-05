@@ -1,48 +1,61 @@
 <template>
-  <div id="guide">
-    <!-- <p>{{$route.params.key}}</p> -->
-    <h1>{{refKey}}</h1>
-    
-    <p>搜尋訂單</p>
-    <input type="text" v-model="inputRefKey">
-    <div id="input-refKey" class="btn" @click="searchOrder">Search</div>
+  <div id="search">
+    <div class="search-container">
+      <input type="text" v-model="inputRefKey" placeholder="訂單編號">
+      <div id="input-refKey" class="search-btn" @click="searchOrder">Search</div>
+    </div>
+  
+    <div class="nav-container" >
+      <div class="nav-btn" :class="{active: view === 1 && order.data !== ''}" @click="view= 1">我要訂購</div>
+      <div class="nav-btn" :class="{active: view === 2 && order.data !== ''}" @click="view = 2">訂單明細</div>
+      
+      
+    </div>
 
-    <div class="order-container" v-if="showOrder">
-      <!-- <p v-for="data in order.data" :key="data">{{data}}</p> -->
+    <div class="order-container"  v-if="view === 1 && order.data !== ''">
       <h2>訂單: {{order.data.name}}</h2>
       
       <div class="order-form">
-        <input type="text" v-model="userOrdering.data.username" placeholder="姓名">
+        <input type="text" v-model="userOrdering.data.username" placeholder="訂購人">
         
           <h4>快速選項</h4>
-        <div class="options-container">
-          <div class="option" v-for="option in order.data.options" :key="option">{{option}}</div>
+        <div class="options-container" >
+          <div class="option" 
+            v-for="(option, index) in order.data.options" 
+            :key="option"
+            @click="addToOrderings(index)"
+            >{{option}}
+          </div>
         </div>
-        <textarea  cols="30" rows="2" v-model="userOrdering.data.ordering" placeholder="其他"></textarea>
-        <textarea  cols="30" rows="2" v-model="userOrdering.data.ps" placeholder="備註"></textarea>
-        <div class="update" @click="updateOrder">送出</div>
+        <textarea  cols="40" rows="4" 
+          v-model="userOrdering.data.ordering"
+          placeholder="目前不支援選擇數量，請手動標記；例: 奶茶x2"
+          ></textarea>
+        <br>
+        <textarea  cols="40" rows="4" v-model="userOrdering.data.ps" placeholder="備註"></textarea>
+        <div class="update-btn" @click="updateOrder">送出</div>
       </div>
-      
-
     </div>
-      <h2>訂單明細</h2>
-      <p v-for="detail in order.data.orderings" :key="detail">{{detail}}</p>
+
+    <OrderingInfo v-show="view === 2 && order.data !== ''" 
+      :orderData="order.data" :refKey="inputRefKey" />
   
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, onMounted } from 'vue';
 // import OrderMenu from '@/components/OrderMenu.vue';
+import OrderingInfo from '@/components/OrderingInfo.vue';
 import db from '../db'
 
 export default defineComponent({
-  name: 'Guide',
+  name: 'Search',
   props: ['refKey'],
-  // components: {OrderMenu},
-  setup(){
-    const inputRefKey = ref<string>('')
-    const showOrder = ref<boolean>(false)
+  components: {OrderingInfo},
+  setup(props){
+    const inputRefKey = ref<string>()
+    const view = ref<number>(0)
     const userOrdering = reactive({
       data:{
         username:'',
@@ -51,7 +64,10 @@ export default defineComponent({
       }
     })
     const order = reactive({
-      data: Object
+      data: {
+        name: 'None',
+        options: 'None'
+      }
     })
 
     
@@ -60,9 +76,15 @@ export default defineComponent({
       db.database().ref('orders/' + inputRefKey.value).on('value', snapshot =>{
         const orderData = snapshot.val()
         order.data = orderData
+        view.value = 1
       })
+    }
 
-      showOrder.value = true
+    const addToOrderings = (index: number): void=>{
+      const selectOption = order.data.options[index]
+      const orderings = userOrdering.data.ordering
+      if (orderings.includes(selectOption))return
+      userOrdering.data.ordering += selectOption + '、'
     }
 
     const updateOrder = (): void => {
@@ -72,37 +94,84 @@ export default defineComponent({
           const data = snapshot.val().orderings
           data.push(userOrdering.data)
           orderRef.update({orderings: data})
+          
         }
         else{
           const data = [userOrdering.data]
           orderRef.update({orderings: data})
         }
+
+        userOrdering.data.username = ''
+        userOrdering.data.ordering = ''
+        userOrdering.data.ps = ''
       })
     }
+
+    onMounted(()=>{
+      inputRefKey.value = props.refKey
+      searchOrder()
+    })
     
     return{
-      showOrder,
+      view,
       inputRefKey,
       searchOrder,
       order,
       updateOrder,
       userOrdering,
+      addToOrderings,
     }
   }
 
 });
 </script>
 <style lang="scss" scoped>
-  .order-container{
-    border: solid 1px slategray;
-    border-radius: 10px;
-    box-sizing: border-box;
-    padding: 10px;
+
+.active{
+  color: aquamarine !important;
+}
+
+.search-container{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  @include shadow();
+
+  >input{
+    text-align: center;
   }
 
-  .order-form{
-    
+  .search-btn{
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px 1px slategray;
   }
+}
+
+  .order-container{
+    box-sizing: border-box;
+    padding: 10px;
+    @include shadow();
+
+    input{
+      width: 50%;
+      padding: 10px;
+    }
+  }
+
+ .nav-container{
+   display: flex;
+  justify-content: space-around;
+   .nav-btn{
+     text-align: center;
+     width: 100%;
+     color: white;
+     padding: 10px;
+     background: slategrey;
+   }
+ }
 
   .options-container{
     gap: 10px;
@@ -111,11 +180,24 @@ export default defineComponent({
   }
 
   .option{
-    // width: 30%;
+    cursor: pointer;
     border-radius: 5px;
     box-sizing: border-box;
     padding: 5px;
     text-align: center;
     background: skyblue;
+
+    &:hover{
+      color: white;
+      background: slategray;
+    }
   }
+
+.update-btn{
+  margin-top: 15px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgb(95, 250, 173);
+}
 </style>
