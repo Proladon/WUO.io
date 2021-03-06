@@ -188,6 +188,7 @@ export default defineComponent({
 
   }
   textarea{
+    resize: vertical;
     width: 62vw;
     height: 10vh;
   }
