@@ -3,7 +3,7 @@
        <h2>訂單明細</h2>
        <p>{{orderData.name}}</p>
         <p>{{orderData.create}}</p>
-        <img id="qrcode-img" v-if="refKey" :src="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/' + refKey" alt="">
+        <img id="qrcode-img" v-if="orderData.name !== 'None'" :src="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/' + refKey" alt="">
         <hr>
       <div class="ordering-item" v-for="(ordering, index) in orderData.orderings" :key="ordering">
           <p><strong>{{ordering.username}}</strong></p>
@@ -66,6 +66,7 @@ import db from '../db'
         }
 
         .delete{
+            cursor: pointer;
             position: absolute;
             text-align: center;
             width: 30px;
@@ -73,10 +74,7 @@ import db from '../db'
             top: 0;
             right: 0;
 
-            &:hover{
-                border-radius: 5px;
-                background: rgb(240, 97, 123);
-            }
+            
         }
 
 

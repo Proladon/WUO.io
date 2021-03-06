@@ -22,6 +22,10 @@
     box-sizing: border-box;
     text-decoration: none;
     width:49%;
+
+    &:hover{
+      background: $light-green;
+    }
   }
 
 </style>

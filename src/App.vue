@@ -1,32 +1,41 @@
 <template>
-<h1>WUO.io</h1>
+<router-link class="home-btn" to="/"><strong>WUO.io</strong></router-link>
 <p class="sub-title">Wut u ordering ?</p>
   <Nav />
-  <router-view/>
+  <Home v-if="$route.name === 'Home'" />
+  <router-view v-if="$route.name !== 'Home'" />
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
 import Nav from '@/components/Nav.vue'
+import Home from '@/views/Home.vue'
 export default defineComponent({
-  components:{Nav}
+  components:{Nav, Home}
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 html{
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: rgb(255, 255, 255);
+  background-color: $light;
+  // background: $dark;
 }
 
 body{
   padding: 20px;
 }
 
-h1{
-  margin: 0;
+.home-btn{
+  color: rgb(95, 250, 173);
+  font-size: 50px;
+  text-decoration: none;
+
 }
+
 .sub-title{
-  margin-top: 5px;
+  letter-spacing: 4px;
+  color: slategray;
+  margin-top: 0px;
   margin-bottom: 30px;
 }
 </style>

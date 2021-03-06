@@ -9387,6 +9387,11 @@ uuid@^3.3.2, uuid@^3.4.0:
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha1-sj5DWK+oogL+ehAK8fX4g/AgB+4=
 
+v-svg-icons@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/v-svg-icons/download/v-svg-icons-1.1.2.tgz#cd4137a809c463191fdea2cc9f2f7939412d5c0e"
+  integrity sha1-zUE3qAnEYxkf3qLMny95OUEtXA4=
+
 v8-compile-cache@^2.0.3:
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/v8-compile-cache/download/v8-compile-cache-2.2.0.tgz?cache=0&sync_timestamp=1603909501672&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fv8-compile-cache%2Fdownload%2Fv8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"

@@ -67,7 +67,7 @@ export default defineComponent({
     const order = reactive({
       data: {
         name: 'None',
-        options: 'None'
+        options: ''
       }
     })
 
@@ -75,6 +75,15 @@ export default defineComponent({
     
     const searchOrder = (): void => {
       db.database().ref('orders/' + inputRefKey.value).on('value', snapshot =>{
+        if(!inputRefKey.value || inputRefKey.value?.trim() === ''){
+          toast.warning('請輸入訂單編號')
+          return
+        }
+        
+        if (!snapshot.exists()){
+          toast.error('查無此訂單')
+          return
+        }
         const orderData = snapshot.val()
         order.data = orderData
       })
@@ -88,6 +97,11 @@ export default defineComponent({
     }
 
     const updateOrder = (): void => {
+      if(order.data.name === 'None') {
+        toast.error('訂單不存在')
+        return
+      }
+
       if(userOrdering.data.ordering.trim() === '') {
         toast.error('訂購品項請勿留空')
         return
@@ -98,12 +112,13 @@ export default defineComponent({
           const data = snapshot.val().orderings
           data.push(userOrdering.data)
           orderRef.update({orderings: data})
-          
         }
         else{
           const data = [userOrdering.data]
           orderRef.update({orderings: data})
         }
+
+        toast.success('已新增訂購!')
 
         userOrdering.data.username = ''
         userOrdering.data.ordering = ''
@@ -189,6 +204,7 @@ export default defineComponent({
 
   .option{
     cursor: pointer;
+    user-select: none;
     border-radius: 5px;
     box-sizing: border-box;
     padding: 5px;

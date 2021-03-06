@@ -6,11 +6,15 @@
       <input type="text" v-model="orderName" placeholder="訂單名稱">
 
       <p><strong>建立快速選項</strong></p>
-      <input type="text" 
-        v-model="optionInput" 
-        placeholder="品項名稱"
-        @keypress.enter="addOption"
-      >
+
+      <div class="input-container">
+        <input type="text" 
+          v-model="optionInput" 
+          placeholder="品項名稱"
+          @keypress.enter="addOption"
+        >
+        <div class="add-btn" @click="addOption">新增</div>
+      </div>
       
       <div class="ordering-options" 
         v-for="(option, index) in orderOptions.options" :key="option">
@@ -78,6 +82,7 @@ export default defineComponent({
 
     const addOption = (): void => {
       const option = optionInput.value.trim()
+      if(orderOptions.options.includes(option)) toast.warning('品項已存在')
       if (option !== '' && !orderOptions.options.includes(option)) {
         orderOptions.options.push(option)
         optionInput.value = ''
@@ -121,8 +126,28 @@ iframe{
   }
 
   input{
+    display: inline-block;
     width: 50%;
     padding: 10px;
+  }
+}
+
+.input-container{
+  @include flexHorizontal();
+  .add-btn{
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: slategray;
+
+    &:hover{
+      color: slategray;
+      background: skyblue;
+    }
   }
 }
 
@@ -160,6 +185,7 @@ iframe{
 }
 
 .create-btn{
+  cursor: pointer;
   margin-top: 30px;
   text-align: center;
   border-radius: 5px;
@@ -167,8 +193,8 @@ iframe{
   background: rgb(95, 250, 173);
 
   &:hover{
-    color: slategray;  
-    background: skyblue;
+    color: white;  
+    background: slategray;
   }
 }
 
@@ -183,6 +209,7 @@ iframe{
 }
 
 .remove-btn{
+  cursor: pointer;
   margin-left: 10px;
   text-align: center;
   border-radius: 5px;
