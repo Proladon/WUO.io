@@ -27,12 +27,12 @@
             >{{option}}
           </div>
         </div>
-        <textarea  cols="40" rows="4" 
+        <textarea   
           v-model="userOrdering.data.ordering"
           placeholder="目前不支援選擇數量，請手動標記；例: 奶茶x2"
           ></textarea>
         <br>
-        <textarea  cols="40" rows="4" v-model="userOrdering.data.ps" placeholder="備註 (選填)"></textarea>
+        <textarea   v-model="userOrdering.data.ps" placeholder="備註 (選填)"></textarea>
         <div class="update-btn" @click="updateOrder">送出</div>
       </div>
     </div>
@@ -46,6 +46,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, onMounted } from 'vue';
 import { useToast } from "vue-toastification";
+import {useRouter} from 'vue-router'
 import OrderingInfo from '@/components/OrderingInfo.vue';
 import db from '../db'
 
@@ -54,6 +55,7 @@ export default defineComponent({
   props: ['refKey'],
   components: {OrderingInfo},
   setup(props){
+    const router = useRouter()
     const toast = useToast()
     const inputRefKey = ref<string>()
     const view = ref<number>(2)
@@ -74,6 +76,7 @@ export default defineComponent({
     
     
     const searchOrder = (): void => {
+      router.push('/search/' + inputRefKey.value)
       db.database().ref('orders/' + inputRefKey.value).on('value', snapshot =>{
         if(!inputRefKey.value || inputRefKey.value?.trim() === ''){
           toast.warning('請輸入訂單編號')
@@ -181,6 +184,12 @@ export default defineComponent({
       width: 50%;
       padding: 10px;
     }
+
+
+  }
+  textarea{
+    width: 62vw;
+    height: 10vh;
   }
 
  .nav-container{

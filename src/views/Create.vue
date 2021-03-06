@@ -26,9 +26,12 @@
     </div>
 
     <div class="share" v-if="refKey !== '' ">
+      <h2>分享訂單</h2>
       <img :src="qrcodeUrl">
 
-      <div class="copy-btn">📑 複製連結</div>
+      <div class="copy-btn" @click="copyToClipboard('key')"><icons class="icon" name="link" size="20px" />複製訂單編號</div>
+
+      <div class="copy-btn" @click="copyToClipboard('link')"><icons class="icon" name="link" size="20px" />複製連結</div>
       <p class="link-btn" @click="$router.push('/search/'+refKey)"><strong>前往訂單 ></strong></p>
 
     </div>
@@ -41,10 +44,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, reactive, ref } from 'vue';
 import { useToast } from "vue-toastification";
+import icons from "v-svg-icons";
+import copy from 'copy-to-clipboard'
 import db from '../db'
 
 export default defineComponent({
   name: 'Create',
+  components:{icons},
   setup(){
     const toast = useToast();
     const orderName = ref<string>('')
@@ -93,6 +99,16 @@ export default defineComponent({
       orderOptions.options.splice(index, 1)
     }
 
+    const copyToClipboard = (type: string): void => {
+      if(type === 'link'){
+        copy('https://proladon.github.io/WUO.io/#/search/' + refKey.value)
+      }
+      else if (type === 'key'){
+        copy(refKey.value)
+      }
+      toast.success("已複製到剪貼簿")
+    }
+
 
 
 
@@ -105,6 +121,7 @@ export default defineComponent({
       orderOptions,
       addOption,
       removeOption,
+      copyToClipboard,
     }
   }
 });
@@ -113,6 +130,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 #create{
   @include shadow();
+}
+.icon{
+  margin-right: 10px;
 }
 
 iframe{
@@ -156,12 +176,18 @@ iframe{
   align-items: center;
   @include flexVertical();
 
+  h2{
+    color: slategray;
+  }
   >img{
     max-width: 300px;
   }
 
 
   .copy-btn, .link-btn{
+    @include flexHorizontal($wrap: nowrap);
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     text-align: center;
     color: white;
@@ -170,13 +196,14 @@ iframe{
     margin-top: 30px;
     background: slategray;
   }
-  .link-btn{
-    color: slategrey;
-    background: rgb(95, 250, 173);
-  }
   .copy-btn:active{
     color: slategray;
     background:skyblue;
+  }
+
+  .link-btn{
+    color: slategrey;
+    background: rgb(95, 250, 173);
   }
   .link-btn:active{
     color: slategray;
