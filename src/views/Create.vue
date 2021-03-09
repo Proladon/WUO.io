@@ -29,9 +29,9 @@
       <h2>分享訂單</h2>
       <img :src="qrcodeUrl">
 
-      <div class="copy-btn" @click="copyToClipboard('key')"><icons class="icon" name="link" size="20px" />複製訂單編號</div>
+      <div class="copy-btn" @click="copyToClipboard('key')">複製訂單編號</div>
 
-      <div class="copy-btn" @click="copyToClipboard('link')"><icons class="icon" name="link" size="20px" />複製連結</div>
+      <div class="copy-btn" @click="copyToClipboard('link')">複製連結</div>
       <p class="link-btn" @click="$router.push('/search/'+refKey.trim())"><strong>前往訂單 ></strong></p>
 
     </div>
@@ -44,13 +44,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, reactive, ref } from 'vue';
 import { useToast } from "vue-toastification";
-import icons from "v-svg-icons";
+// import icons from "v-svg-icons";
 import copy from 'copy-to-clipboard'
 import db from '../db'
 
 export default defineComponent({
   name: 'Create',
-  components:{icons},
+  // components:{icons},
   setup(){
     const toast = useToast();
     const orderName = ref<string>('')

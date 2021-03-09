@@ -6500,10 +6500,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.npm.taobao.org/mongoose-legacy-pluralize/download/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha1-O6n5H6UHtRhtOZ+0CFS/8Y+1Y+Q=
 
-mongoose@^5.11.18:
-  version "5.11.18"
-  resolved "https://registry.npm.taobao.org/mongoose/download/mongoose-5.11.18.tgz?cache=0&sync_timestamp=1614131445343&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmongoose%2Fdownload%2Fmongoose-5.11.18.tgz#76fdcefeb2afc7409705fc44b58045953bba5ee1"
-  integrity sha1-dv3O/rKvx0CXBfxEtYBFlTu6XuE=
+mongoose@^5.11.19:
+  version "5.11.19"
+  resolved "https://registry.npm.taobao.org/mongoose/download/mongoose-5.11.19.tgz#fb20ee6145f4ca9bd757f87ed3ae9e13e92effde"
+  integrity sha1-+yDuYUX0ypvXV/h+066eE+ku/94=
   dependencies:
     "@types/mongodb" "^3.5.27"
     bson "^1.1.4"
@@ -9386,11 +9386,6 @@ uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha1-sj5DWK+oogL+ehAK8fX4g/AgB+4=
-
-v-svg-icons@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npm.taobao.org/v-svg-icons/download/v-svg-icons-1.1.2.tgz#cd4137a809c463191fdea2cc9f2f7939412d5c0e"
-  integrity sha1-zUE3qAnEYxkf3qLMny95OUEtXA4=
 
 v8-compile-cache@^2.0.3:
   version "2.2.0"

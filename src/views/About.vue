@@ -3,13 +3,13 @@
     <h1>📜 關於</h1>
 
     <div class="block">
-      <icons class="icon" name="dev" size="30px" color="slategray" />
+      <!-- <icons class="icon" name="dev" size="30px" color="slategray" /> -->
       <p><a href="https://github.com/Proladon" target="_blank">Proladon</a></p>
 
     </div>
 
     <div class="block">
-      <icons class="icon" name="github" size="30px" color="slategray" />
+      <!-- <icons class="icon" name="github" size="30px" color="slategray" /> -->
       <p>
         <a href="https://github.com/Proladon/WUO.io">
           https://github.com/Proladon/WUO.io
@@ -30,13 +30,13 @@
 </template>
 
 <script lang="ts">
-import icons from "v-svg-icons";
+// import icons from "v-svg-icons";
 import { defineComponent} from 'vue';
 
 
 export default defineComponent({
   name: 'About',
-  components:{icons},
+  // components:{icons},
 
 });
 </script>
