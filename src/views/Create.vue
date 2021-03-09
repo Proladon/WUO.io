@@ -34,12 +34,23 @@
   </div>
 
 
+    <div class="recent-ordering-container">
+      <h2 align="center">最近建立的訂單</h2>
+      <div class="recent-ordering-item" v-for="(ordering, index) in recent" :key="ordering.name">
+        <div class="delete-btn" @click="deleteRecnt(index)"><span>×</span></div>
+        <p><strong>ID: </strong>{{ordering.id}}</p>
+        <p><strong>名稱: </strong>{{ordering.name}}</p>
+        <p><strong>編號: </strong>{{ordering.key}} <span class="copy-btn" @click="copyKey(ordering.key)">複製</span></p>
+      </div>
+    </div>
+
+
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, reactive, ref, onMounted } from 'vue';
+import { defineComponent, reactive, ref, computed } from 'vue';
 import { useToast } from "vue-toastification";
 import { useStore } from 'vuex'
 import copy from 'copy-to-clipboard'
@@ -50,6 +61,9 @@ export default defineComponent({
 
   setup(){
     const store = useStore()
+    const recent = computed(()=>{
+      return store.state.recent
+    })
     const toast = useToast()
     const orderName = ref<string>('')
     const optionInput = ref<string>('')
@@ -116,7 +130,19 @@ export default defineComponent({
       toast.success("已複製到剪貼簿")
     }
 
+
+    const deleteRecnt = (index: number): void => {
+      store.commit('REMOVE_RECENT', index)
+      store.commit('UPDATE_RECENT')
+    }
+
+    const copyKey = (key: string): void => {
+      copy(key)
+      toast.success('已複製訂單編號')
+    }
+
     return{
+      recent,
       qrcodeUrl,
       orderName,
       refKey,
@@ -126,6 +152,8 @@ export default defineComponent({
       addOption,
       removeOption,
       copyToClipboard,
+      copyKey,
+      deleteRecnt,
     }
   }
 });
@@ -250,5 +278,36 @@ iframe{
   background: rgb(240, 97, 123);
 }
 
+.recent-ordering-item{
+  position: relative;
+  @include shadow();
 
+  p{
+    word-break: break-word;
+  }
+}
+
+.delete-btn{
+  justify-content: center;
+  align-items: center;
+  @include flexHorizontal();
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+}
+
+.copy-btn{
+  cursor: pointer;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: solid 1px slategray;
+}
 </style>
