@@ -15,6 +15,7 @@ import Home from '@/views/Home.vue'
 
 export default defineComponent({
   components:{Nav, Home},
+
 })
 </script>
 

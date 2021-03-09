@@ -4,16 +4,22 @@ import router from './router'
 import store from './store'
 import Toast, { PluginOptions } from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import VueToastificationPlugin from 'vue-toastification';
 
-createApp(App)
-    .use(store)
-    .use(router)
-    .use(Toast)
-    .mount('#app')
+const app = createApp(App)
 
-    router.afterEach((to, from, next)=>{
-        // console.log("debug")
-        alert("debug")
-        window.scrollTo(0,1)
-        window.scrollTo(0,0)
-    })
+app.use(store)
+app.use(router)
+app.use(Toast)
+app.mount('#app')
+
+router.afterEach((to, from, next)=>{
+    window.scrollTo(0,1)
+    window.scrollTo(0,0)
+})
+
+app.config.errorHandler = function (err, vm, info) {
+    alert(err)
+    alert(info)
+    console.log(err)
+}
