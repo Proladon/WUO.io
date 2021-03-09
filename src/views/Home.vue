@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, nextTick } from 'vue';
+import { defineComponent, onMounted, onUpdated ,nextTick } from 'vue';
 
 
 export default defineComponent({
@@ -31,6 +31,13 @@ export default defineComponent({
   },
   setup(){
     onMounted(()=>{
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
+
+    onUpdated(()=>{
       nextTick(()=>{
         window.scrollTo(0,1)
         window.scrollTo(0,0)

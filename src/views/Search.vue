@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted, nextTick } from 'vue';
+import { defineComponent, reactive, ref, onMounted, onUpdated, nextTick } from 'vue';
 import { useToast } from "vue-toastification";
 import {useRouter} from 'vue-router'
 import OrderingInfo from '@/components/OrderingInfo.vue';
@@ -139,6 +139,13 @@ export default defineComponent({
       inputRefKey.value = props.refKey
       if(props.refKey) searchOrder()
 
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
+
+    onUpdated(()=>{
       nextTick(()=>{
         window.scrollTo(0,1)
         window.scrollTo(0,0)

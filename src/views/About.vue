@@ -31,12 +31,26 @@
 
 <script lang="ts">
 import icons from "v-svg-icons";
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUpdated, nextTick } from 'vue';
 
 
 export default defineComponent({
   name: 'About',
-  components:{icons}
+  components:{icons},
+  setup(){
+    onMounted(()=>{
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
+    onUpdated(()=>{
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
+  }
 
 });
 </script>
