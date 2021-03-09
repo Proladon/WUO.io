@@ -22,13 +22,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, nextTick } from 'vue';
 
 
 export default defineComponent({
   name: 'Home',
   components: {
   },
+  setup(){
+    onMounted(()=>{
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
+  }
 
 });
 </script>

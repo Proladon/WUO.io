@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted } from 'vue';
+import { defineComponent, reactive, ref, onMounted, nextTick } from 'vue';
 import { useToast } from "vue-toastification";
 import {useRouter} from 'vue-router'
 import OrderingInfo from '@/components/OrderingInfo.vue';
@@ -59,6 +59,7 @@ export default defineComponent({
     const toast = useToast()
     const inputRefKey = ref<string>()
     const view = ref<number>(2)
+    
     const userOrdering = reactive({
       data:{
         username:'',
@@ -66,6 +67,7 @@ export default defineComponent({
         ps: ''
       }
     })
+    
     const order = reactive({
       data: {
         name: 'None',
@@ -76,9 +78,10 @@ export default defineComponent({
     
     
     const searchOrder = (): void => {
-      router.push('/search/' + inputRefKey.value)
-      db.database().ref('orders/' + inputRefKey.value).on('value', snapshot =>{
-        if(!inputRefKey.value || inputRefKey.value?.trim() === ''){
+      const key = inputRefKey.value?.trim()
+      router.push('/search/' + key)
+      db.database().ref('orders/' + key).on('value', snapshot =>{
+        if(!key || key === ''){
           toast.warning('請輸入訂單編號')
           return
         }
@@ -135,6 +138,11 @@ export default defineComponent({
       if(inputRefKey.value === '') return
       inputRefKey.value = props.refKey
       if(props.refKey) searchOrder()
+
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
     })
     
     return{

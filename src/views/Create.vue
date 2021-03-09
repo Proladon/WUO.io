@@ -32,7 +32,7 @@
       <div class="copy-btn" @click="copyToClipboard('key')"><icons class="icon" name="link" size="20px" />複製訂單編號</div>
 
       <div class="copy-btn" @click="copyToClipboard('link')"><icons class="icon" name="link" size="20px" />複製連結</div>
-      <p class="link-btn" @click="$router.push('/search/'+refKey)"><strong>前往訂單 ></strong></p>
+      <p class="link-btn" @click="$router.push('/search/'+refKey.trim())"><strong>前往訂單 ></strong></p>
 
     </div>
   
@@ -42,7 +42,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, nextTick, onMounted } from 'vue';
 import { useToast } from "vue-toastification";
 import icons from "v-svg-icons";
 import copy from 'copy-to-clipboard'
@@ -109,6 +109,13 @@ export default defineComponent({
       toast.success("已複製到剪貼簿")
     }
 
+
+    onMounted(()=>{
+      nextTick(()=>{
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+      })
+    })
 
 
 
