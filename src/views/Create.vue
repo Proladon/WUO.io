@@ -42,7 +42,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, reactive, ref, nextTick, onMounted, onUpdated } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import { useToast } from "vue-toastification";
 import icons from "v-svg-icons";
 import copy from 'copy-to-clipboard'
@@ -108,22 +108,6 @@ export default defineComponent({
       }
       toast.success("已複製到剪貼簿")
     }
-
-
-    onMounted(()=>{
-      nextTick(()=>{
-        window.scrollTo(0,1)
-        window.scrollTo(0,0)
-      })
-    })
-
-    onUpdated(()=>{
-      nextTick(()=>{
-        window.scrollTo(0,1)
-        window.scrollTo(0,0)
-      })
-    })
-
 
 
     return{

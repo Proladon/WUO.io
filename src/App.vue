@@ -8,28 +8,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onUpdated, onMounted, nextTick} from 'vue'
+import {defineComponent} from 'vue'
 import Nav from '@/components/Nav.vue'
 import Home from '@/views/Home.vue'
 // import icons from "v-svg-icons";
 
 export default defineComponent({
   components:{Nav, Home},
-  setup(){
-    onMounted(()=>{
-      nextTick(()=>{
-        window.scrollTo(0,1)
-        window.scrollTo(0,0)
-      })
-    })
-
-    onUpdated(()=>{
-      nextTick(()=>{
-        window.scrollTo(0,1)
-        window.scrollTo(0,0)
-      })
-    })
-  }
 })
 </script>
 

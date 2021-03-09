@@ -10,3 +10,10 @@ createApp(App)
     .use(router)
     .use(Toast)
     .mount('#app')
+
+    router.afterEach((to, from, next)=>{
+        // console.log("debug")
+        alert("debug")
+        window.scrollTo(0,1)
+        window.scrollTo(0,0)
+    })
