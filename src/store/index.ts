@@ -7,7 +7,7 @@ export default createStore({
   mutations: {
     UPDATE_RECENT: (state): void => {
       const data = (localStorage.getItem('recent') as string)
-      state.recent = JSON.parse(data)
+      if(data) state.recent = JSON.parse(data)
     },
 
     REMOVE_RECENT: (state, index: number): void => {
