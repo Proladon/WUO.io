@@ -10,12 +10,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/create',
     name: 'Create',
-    component: () => import('@/views/Create.vue'),
+    component: () => import('../views/Create.vue'),
   },
   {
     path: '/about',
     name: 'About',
-    component: () => import('@/views/About.vue'),
+    component: () => import('../views/About.vue'),
   },
   {
     path: '/search/',
