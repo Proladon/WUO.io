@@ -8,14 +8,20 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, onMounted} from 'vue'
+import {useStore} from 'vuex'
 import Nav from '@/components/Nav.vue'
 import Home from '@/views/Home.vue'
 // import icons from "v-svg-icons";
 
 export default defineComponent({
   components:{Nav, Home},
-
+  setup(){
+    const store = useStore()
+    onMounted((): void => {
+      store.commit('UPDATE_RECENT')
+    })
+  }
 })
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="create">
-    
+
     <div class="quick-order" v-if="refKey === '' ">
       <h2>訂單建立</h2>
       <input type="text" v-model="orderName" placeholder="訂單名稱">
@@ -8,23 +8,19 @@
       <p><strong>建立快速選項</strong></p>
 
       <div class="input-container">
-        <input type="text" 
-          v-model="optionInput" 
-          placeholder="品項名稱"
-          @keypress.enter="addOption"
-        >
+        <input type="text" v-model="optionInput" placeholder="品項名稱" @keypress.enter="addOption">
         <div class="add-btn" @click="addOption">新增</div>
       </div>
-      
-      <div class="ordering-options" 
-        v-for="(option, index) in orderOptions.options" :key="option">
+
+      <div class="ordering-options" v-for="(option, index) in orderOptions.options" :key="option">
         <p>{{option}} </p>
         <span class="remove-btn" @click="removeOption(index)">×</span>
       </div>
-      
+
       <div class="create-btn" @click="createOrder">創建訂單</div>
     </div>
 
+    <!-- After Create -->
     <div class="share" v-if="refKey !== '' ">
       <h2>分享訂單</h2>
       <img :src="qrcodeUrl">
@@ -33,26 +29,28 @@
 
       <div class="copy-btn" @click="copyToClipboard('link')">複製連結</div>
       <p class="link-btn" @click="$router.push('/search/'+refKey.trim())"><strong>前往訂單 ></strong></p>
-
     </div>
   
   </div>
+
+
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, onMounted } from 'vue';
 import { useToast } from "vue-toastification";
-// import icons from "v-svg-icons";
+import { useStore } from 'vuex'
 import copy from 'copy-to-clipboard'
 import db from '../db'
 
 export default defineComponent({
   name: 'Create',
-  // components:{icons},
+
   setup(){
-    const toast = useToast();
+    const store = useStore()
+    const toast = useToast()
     const orderName = ref<string>('')
     const optionInput = ref<string>('')
     const orderOptions = reactive({
@@ -84,7 +82,14 @@ export default defineComponent({
 
       const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
       qrcodeUrl.value =  base + refKey.value
+
+      store.commit('ADD_RECENT', {
+        id: newOrder.id,
+        name: newOrder.name,
+        key: refKey.value
+      })
     }
+
 
     const addOption = (): void => {
       const option = optionInput.value.trim()
@@ -95,9 +100,11 @@ export default defineComponent({
       }
     }
 
+
     const removeOption = (index: number): void => {
       orderOptions.options.splice(index, 1)
     }
+    
 
     const copyToClipboard = (type: string): void => {
       if(type === 'link'){
@@ -108,7 +115,6 @@ export default defineComponent({
       }
       toast.success("已複製到剪貼簿")
     }
-
 
     return{
       qrcodeUrl,
@@ -243,4 +249,6 @@ iframe{
   padding-right: 10px;
   background: rgb(240, 97, 123);
 }
+
+
 </style>

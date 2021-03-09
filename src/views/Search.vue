@@ -2,7 +2,7 @@
   <div id="search">
     <div class="search-container">
       <input type="text" v-model="inputRefKey" placeholder="訂單編號">
-      <div id="input-refKey" class="search-btn" @click="searchOrder">Search</div>
+      <div id="input-refKey" class="search-btn" @click="searchOrder">搜尋</div>
     </div>
   
     <div class="nav-container" >
@@ -39,14 +39,26 @@
 
     <OrderingInfo v-show="view === 2 " 
       :orderData="order.data" :refKey="inputRefKey" />
+
+    <div class="recent-ordering-container">
+      <h2 align="center">最近建立的訂單</h2>
+      <div class="recent-ordering-item" v-for="(ordering, index) in recent" :key="ordering.name">
+        <div class="delete-btn" @click="deleteRecnt(index)"><span>×</span></div>
+        <p><strong>ID: </strong>{{ordering.id}}</p>
+        <p><strong>名稱: </strong>{{ordering.name}}</p>
+        <p><strong>編號: </strong>{{ordering.key}} <span class="copy-btn" @click="copyKey(ordering.key)">複製</span></p>
+      </div>
+    </div>
   
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, onMounted, computed } from 'vue';
+import copy from 'copy-to-clipboard'
 import { useToast } from "vue-toastification";
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import OrderingInfo from '@/components/OrderingInfo.vue';
 import db from '../db'
 
@@ -55,6 +67,10 @@ export default defineComponent({
   props: ['refKey'],
   components: {OrderingInfo},
   setup(props){
+    const store = useStore()
+    const recent = computed(()=>{
+      return store.state.recent
+    })
     const router = useRouter()
     const toast = useToast()
     const inputRefKey = ref<string>()
@@ -74,6 +90,8 @@ export default defineComponent({
         options: ''
       }
     })
+
+    
 
     
     
@@ -134,8 +152,26 @@ export default defineComponent({
       })
     }
 
+    const deleteRecnt = (index: number): void => {
+      store.commit('REMOVE_RECENT', index)
+      store.commit('UPDATE_RECENT')
+    }
+
+    const copyKey = (key: string): void => {
+      copy(key)
+      toast.success('已複製訂單編號')
+    }
+
+
+    onMounted(()=>{
+      if(inputRefKey.value === '') return
+      inputRefKey.value = props.refKey
+      if(props.refKey) searchOrder()
+    })
+
     
     return{
+      recent,
       view,
       inputRefKey,
       searchOrder,
@@ -143,12 +179,46 @@ export default defineComponent({
       updateOrder,
       userOrdering,
       addToOrderings,
+      copyKey,
+      deleteRecnt,
     }
   }
 
 });
 </script>
 <style lang="scss" scoped>
+
+.search-btn{
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 5px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px 1px slategray;
+}
+
+.delete-btn{
+  justify-content: center;
+  align-items: center;
+  @include flexHorizontal();
+
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+}
+
+.copy-btn{
+  cursor: pointer;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: solid 1px slategray;
+}
 
 .active{
   color: aquamarine !important;
@@ -162,14 +232,6 @@ export default defineComponent({
 
   >input{
     text-align: center;
-  }
-
-  .search-btn{
-    cursor: pointer;
-    padding: 5px;
-    margin-left: 5px;
-    border-radius: 5px;
-    box-shadow: 1px 1px 5px 1px slategray;
   }
 }
 
@@ -235,6 +297,15 @@ export default defineComponent({
 
   &:hover{
     background: skyblue;
+  }
+}
+
+.recent-ordering-item{
+  position: relative;
+  @include shadow();
+
+  p{
+    word-break: break-word;
   }
 }
 </style>

@@ -30,13 +30,11 @@
 </template>
 
 <script lang="ts">
-// import icons from "v-svg-icons";
 import { defineComponent} from 'vue';
 
 
 export default defineComponent({
   name: 'About',
-  // components:{icons},
 
 });
 </script>
