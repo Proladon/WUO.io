@@ -4,14 +4,17 @@ import router from './router'
 import store from './store'
 import Toast, { PluginOptions } from "vue-toastification";
 import "vue-toastification/dist/index.css";
-import VueToastificationPlugin from 'vue-toastification';
+import VueFinalModal, { VfmOptions, VueFinalModalProperty } from 'vue-final-modal'
+
 
 const app = createApp(App)
 
-app.use(store)
-app.use(router)
-app.use(Toast)
-app.mount('#app')
+app
+    .use(store)
+    .use(router)
+    .use(Toast)
+    .use(VueFinalModal())
+    .mount('#app')
 
 router.afterEach((to, from, next)=>{
     window.scrollTo(0,1)
@@ -20,6 +23,5 @@ router.afterEach((to, from, next)=>{
 
 app.config.errorHandler = function (err, vm, info) {
     alert(err)
-    alert(info)
     console.log(err)
 }

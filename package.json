@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.6.5",
@@ -20,6 +21,7 @@
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.19",
     "vue": "^3.0.0",
+    "vue-final-modal": "^3.0.1",
     "vue-router": "^4.0.0-0",
     "vue-toastification": "^2.0.0-rc.1",
     "vuex": "^4.0.0-0"

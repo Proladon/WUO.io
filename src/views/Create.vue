@@ -5,12 +5,22 @@
       <h2>訂單建立</h2>
       <input type="text" v-model="orderName" placeholder="訂單名稱">
 
-      <p><strong>建立快速選項</strong></p>
 
+      <p><strong>建立快速選項</strong></p>
       <div class="input-container">
         <input type="text" v-model="optionInput" placeholder="品項名稱" @keypress.enter="addOption">
         <div class="add-btn" @click="addOption">新增</div>
       </div>
+
+      
+      <hr>
+      <!-- <div class="input-container"> -->
+        <label for="image-upload">
+          <p><strong>上傳圖片</strong></p>
+          <input type="file" id="image-upload" @change="uploadImg($event)">
+        </label>
+        <img class="custom-Img" :src="customImg">
+      <!-- </div> -->
 
       <div class="ordering-options" v-for="(option, index) in orderOptions.options" :key="option">
         <p>{{option}} </p>
@@ -44,7 +54,6 @@
       </div>
     </div>
 
-
 </template>
 
 <script lang="ts">
@@ -55,15 +64,17 @@ import { useToast } from "vue-toastification";
 import { useStore } from 'vuex'
 import copy from 'copy-to-clipboard'
 import db from '../db'
+import axios from 'axios'
+
 
 export default defineComponent({
   name: 'Create',
-
   setup(){
     const store = useStore()
     const recent = computed(()=>{
       return store.state.recent
     })
+    const customImg = ref<string>('')
     const toast = useToast()
     const orderName = ref<string>('')
     const optionInput = ref<string>('')
@@ -72,7 +83,7 @@ export default defineComponent({
     })
     
     const refKey = ref<string>('')
-    const qrcodeUrl =ref<string>('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/6d391369321565.5b7d0d570e829.gif')
+    const qrcodeUrl =ref<string>('')
     
     const ordersRef = db.database().ref('orders')
 
@@ -94,8 +105,14 @@ export default defineComponent({
       
       refKey.value = (order.key as string);
 
+      
       const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
-      qrcodeUrl.value =  base + refKey.value
+      
+      qrcodeUrl.value = require('../assets/loading.gif')
+      axios.get(base + refKey.value).then((res: any)=>{
+        qrcodeUrl.value =  res.config.url
+      })
+      
 
       store.commit('ADD_RECENT', {
         id: newOrder.id,
@@ -141,8 +158,28 @@ export default defineComponent({
       toast.success('已複製訂單編號')
     }
 
+    const uploadImg = async (e: Event | any) =>{
+      const file = e.target.files[0]
+      axios.post('https://api.imgbb.com/1/upload',{
+        params:{
+          key:'c3097365a61a6a4c3de3f20f9232c00e',
+          image: file
+        }
+      }).then(res=>{
+        console.log(res)
+      })
+      // const toBase64 = (file: any) => new Promise((resolve, reject) => {
+      //     const reader = new FileReader();
+      //     reader.readAsDataURL(file);
+      //     reader.onload = () => resolve(reader.result);
+      //     reader.onerror = error => reject(error);
+      // })
+      // console.log((await toBase64(file) as string))
+    }
+
     return{
       recent,
+      customImg,
       qrcodeUrl,
       orderName,
       refKey,
@@ -154,12 +191,36 @@ export default defineComponent({
       copyToClipboard,
       copyKey,
       deleteRecnt,
+      uploadImg,
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
+hr{
+  height: 0.5px;
+  background: slategray;
+  width: 100%;
+}
+
+label > p{
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  border: solid 1px slategray;
+}
+
+#image-upload{
+  border: none;
+  display: none;
+}
+
+.custom-Img{
+  max-width: 100%;
+}
+
+
 #create{
   @include shadow();
 }
