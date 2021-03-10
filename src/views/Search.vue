@@ -36,7 +36,7 @@
         <textarea   v-model="userOrdering.data.ps" placeholder="備註 (選填)"></textarea>
         <br><br>
 
-        <img class="menu-image" :src="order.data.image" alt="圖片過期">
+        <img class="menu-image" v-show="order.data.image !== '' " :src="order.data.image" alt="圖片過期">
         
         <div class="update-btn" @click="updateOrder">送出</div>
 

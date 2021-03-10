@@ -19,11 +19,15 @@
       
       <hr>
 
+      <p v-if="customImg !== '' " class="cancel-upload" @click="cancelImg"><strong>取消圖片</strong></p>
       <label for="image-upload">
-        <p><strong>上傳圖片</strong></p>
-        <input type="file" id="image-upload" @change="uploadImg($event)">
+        <p v-if="customImg === '' "><strong>上傳圖片</strong></p>
+        <input type="file"  id="image-upload" @change="uploadImg($event)">
       </label>
       <img class="custom-Img" :src="customImg">
+      
+
+      <p class="warn"><strong>注意: 訂單創建24小時後將自動刪除</strong></p>
 
       <div class="create-btn" @click="createOrder">創建訂單</div>
     </div>
@@ -33,9 +37,21 @@
       <h2>分享訂單</h2>
       <img :src="qrcodeUrl">
 
-      <div class="copy-btn" @click="copyToClipboard('key')">複製訂單編號</div>
+      <div class="copy-btn" @click="copyToClipboard('key')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+          <path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.001 1.001 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+          <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 0 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 0 0-4.243-4.243L6.586 4.672z"/>
+        </svg>
+        複製訂單編號
+      </div>
 
-      <div class="copy-btn" @click="copyToClipboard('link')">複製連結</div>
+      <div class="copy-btn" @click="copyToClipboard('link')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+          <path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.001 1.001 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+          <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 0 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 0 0-4.243-4.243L6.586 4.672z"/>
+        </svg>
+        複製連結
+      </div>
       <p class="link-btn" @click="$router.push('/search/'+refKey.trim())"><strong>前往訂單 ></strong></p>
     </div>
   
@@ -118,7 +134,7 @@ export default defineComponent({
       
       const upload = (document.getElementById('image-upload') as any)
       
-      if(upload.files[0]){
+      if(customImg.value !== ''){
         const formData = new FormData();
         formData.append("image", upload.files[0]);
         axios.post('https://api.imgbb.com/1/upload', formData, {
@@ -127,7 +143,7 @@ export default defineComponent({
             },
             params:{
               key:'56ba44899d75f86a7bf2ef5d371b0093',
-              expiration: 60
+              expiration: 86400
             }
         })
         .then(res=>{
@@ -193,6 +209,10 @@ export default defineComponent({
       }
     }
 
+    const cancelImg = (): void => {
+      customImg.value = ''
+    }
+
     return{
       recent,
       customImg,
@@ -208,19 +228,21 @@ export default defineComponent({
       copyKey,
       deleteRecnt,
       uploadImg,
+      cancelImg,
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
+
 hr{
   height: 0.5px;
   background: slategray;
   width: 100%;
 }
 
-label > p{
+label > p, .cancel-upload{
   cursor: pointer;
   text-align: center;
   border-radius: 5px;
@@ -392,5 +414,15 @@ iframe{
   margin-left: 5px;
   border-radius: 5px;
   border: solid 1px slategray;
+
+  >.bi-link-45deg{
+    margin-right: 5px;
+  }
+}
+
+.warn{
+  text-align: center;
+  color: rgb(255, 105, 125);
+  font-size: 14px;
 }
 </style>

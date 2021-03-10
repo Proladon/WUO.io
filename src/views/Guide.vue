@@ -1,5 +1,5 @@
 <template>
-  <div id="search">
+  <div id="guide">
     
     <h1>使用指南</h1>
     <p>-- 🚧 待更新 --</p>
