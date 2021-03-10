@@ -1,6 +1,6 @@
 <template>
   <router-link class="home-btn" to="/"><strong>WUO.io</strong></router-link>
-  <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link>
+  <!-- <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link> -->
   <p class="sub-title">Wut u ordering ?</p>
   <Nav />
   <Home v-if="$route.name === 'Home'" />
@@ -12,15 +12,38 @@ import {defineComponent, onMounted} from 'vue'
 import {useStore} from 'vuex'
 import Nav from '@/components/Nav.vue'
 import Home from '@/views/Home.vue'
-// import icons from "v-svg-icons";
+import db from './db'
+import { DateTime } from 'date-time-js'
+
 
 export default defineComponent({
   components:{Nav, Home},
   setup(){
     const store = useStore()
+    const ordersRef = db.database().ref('orders')
+
     onMounted((): void => {
       store.commit('UPDATE_RECENT')
+
+      ordersRef.get( ).then(snapshot => {
+        if(snapshot.exists()){
+          const allData = snapshot.val()
+
+          for(const data in allData){
+            // const create = new DateTime(new Date(allData[data].create)).date()
+            // const today = new DateTime(new Date()).date()
+
+            const create = new DateTime(new Date(allData[data].create)).minute()
+            const today = new DateTime(new Date()).minute()
+
+            if (today - create > 1){
+              db.database().ref('orders/' + data).remove()
+            }
+          }
+        }
+      })
     })
+
   }
 })
 </script>

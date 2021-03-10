@@ -12,20 +12,18 @@
         <div class="add-btn" @click="addOption">新增</div>
       </div>
 
-      
-      <hr>
-      <!-- <div class="input-container"> -->
-        <label for="image-upload">
-          <p><strong>上傳圖片</strong></p>
-          <input type="file" id="image-upload" @change="uploadImg($event)">
-        </label>
-        <img class="custom-Img" :src="customImg">
-      <!-- </div> -->
-
       <div class="ordering-options" v-for="(option, index) in orderOptions.options" :key="option">
         <p>{{option}} </p>
         <span class="remove-btn" @click="removeOption(index)">×</span>
       </div>
+      
+      <hr>
+
+      <label for="image-upload">
+        <p><strong>上傳圖片</strong></p>
+        <input type="file" id="image-upload" @change="uploadImg($event)">
+      </label>
+      <img class="custom-Img" :src="customImg">
 
       <div class="create-btn" @click="createOrder">創建訂單</div>
     </div>
@@ -48,7 +46,6 @@
       <h2 align="center">最近建立的訂單</h2>
       <div class="recent-ordering-item" v-for="(ordering, index) in recent" :key="ordering.name">
         <div class="delete-btn" @click="deleteRecnt(index)"><span>×</span></div>
-        <p><strong>ID: </strong>{{ordering.id}}</p>
         <p><strong>名稱: </strong>{{ordering.name}}</p>
         <p><strong>編號: </strong>{{ordering.key}} <span class="copy-btn" @click="copyKey(ordering.key)">複製</span></p>
       </div>
@@ -65,6 +62,7 @@ import { useStore } from 'vuex'
 import copy from 'copy-to-clipboard'
 import db from '../db'
 import axios from 'axios'
+
 
 
 export default defineComponent({
@@ -95,30 +93,54 @@ export default defineComponent({
       }
 
       const newOrder = {
-        id:'',
         name: orderName.value,
         create: (new Date()).toString(),
+        image: '',
         options: orderOptions.options,
       }
 
-      const order = ordersRef.push(newOrder)
+      const pushDB = ()=>{
+        const order = ordersRef.push(newOrder)
+        refKey.value = (order.key as string);
+  
+        const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
+        
+        qrcodeUrl.value = require('../assets/loading.gif')
+        axios.get(base + refKey.value).then((res: any)=>{
+          qrcodeUrl.value =  res.config.url
+        })
+  
+        store.commit('ADD_RECENT', {
+          name: newOrder.name,
+          key: refKey.value
+        })
+      }
       
-      refKey.value = (order.key as string);
-
+      const upload = (document.getElementById('image-upload') as any)
       
-      const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
-      
-      qrcodeUrl.value = require('../assets/loading.gif')
-      axios.get(base + refKey.value).then((res: any)=>{
-        qrcodeUrl.value =  res.config.url
-      })
-      
-
-      store.commit('ADD_RECENT', {
-        id: newOrder.id,
-        name: newOrder.name,
-        key: refKey.value
-      })
+      if(upload.files[0]){
+        const formData = new FormData();
+        formData.append("image", upload.files[0]);
+        axios.post('https://api.imgbb.com/1/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            params:{
+              key:'56ba44899d75f86a7bf2ef5d371b0093',
+              expiration: 60
+            }
+        })
+        .then(res=>{
+          newOrder.image = res.data.data.display_url
+          pushDB()
+        })
+        .catch(error=>{
+          toast.error(error)
+        })
+      }
+      else{
+        pushDB()
+      }
     }
 
 
@@ -160,23 +182,15 @@ export default defineComponent({
 
     const uploadImg = async (e: Event | any) =>{
       const file = e.target.files[0]
-      axios.post('https://api.imgbb.com/1/upload',{
-        params:{
-          key:'c3097365a61a6a4c3de3f20f9232c00e',
-          image: file
-        }
-      }).then(res=>{
-        console.log(res)
-      }).catch(error=>{
-        console.log(error)
-      })
-      // const toBase64 = (file: any) => new Promise((resolve, reject) => {
-      //     const reader = new FileReader();
-      //     reader.readAsDataURL(file);
-      //     reader.onload = () => resolve(reader.result);
-      //     reader.onerror = error => reject(error);
-      // })
-      // console.log((await toBase64(file) as string))
+      if(file){
+        const toBase64 = (file: File) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        })
+        customImg.value = await toBase64(file) as string
+      }
     }
 
     return{
@@ -207,10 +221,16 @@ hr{
 }
 
 label > p{
+  cursor: pointer;
   text-align: center;
   border-radius: 5px;
   padding: 5px;
   border: solid 1px slategray;
+
+  &:hover{
+    color: white;
+    background: slategray;
+  }
 }
 
 #image-upload{
@@ -219,7 +239,7 @@ label > p{
 }
 
 .custom-Img{
-  max-width: 100%;
+  width: 100%;
 }
 
 

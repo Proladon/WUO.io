@@ -31,9 +31,15 @@
           v-model="userOrdering.data.ordering"
           placeholder="目前不支援選擇數量，請手動標記；例: 奶茶x2"
           ></textarea>
+
         <br>
         <textarea   v-model="userOrdering.data.ps" placeholder="備註 (選填)"></textarea>
+        <br><br>
+
+        <img class="menu-image" :src="order.data.image" alt="圖片過期">
+        
         <div class="update-btn" @click="updateOrder">送出</div>
+
       </div>
     </div>
 
@@ -74,7 +80,8 @@ export default defineComponent({
     const order = reactive({
       data: {
         name: 'None',
-        options: ''
+        image: '',
+        options: '',
       }
     })
 
@@ -160,6 +167,10 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 
+.menu-image{
+  max-width: 100%;
+}
+
 .search-btn{
     cursor: pointer;
     padding: 5px;
@@ -200,7 +211,7 @@ export default defineComponent({
   textarea{
     resize: vertical;
     width: 62vw;
-    height: 10vh;
+    min-height: 10vh;
   }
 
  .nav-container{
