@@ -167,6 +167,8 @@ export default defineComponent({
         }
       }).then(res=>{
         console.log(res)
+      }).catch(error=>{
+        console.log(error)
       })
       // const toBase64 = (file: any) => new Promise((resolve, reject) => {
       //     const reader = new FileReader();
