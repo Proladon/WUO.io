@@ -35,8 +35,8 @@ export default defineComponent({
 
             // const create = new DateTime(new Date(allData[data].create)).minute()
             // const today = new DateTime(new Date()).minute()
-
-            if (today - create > 1){
+            
+            if (today - create >= 1){
               db.database().ref('orders/' + data).remove()
             }
           }

@@ -54,10 +54,9 @@ export default defineComponent({
             promise.then(()=>{
                 toast.info("登入成功!")
             }).catch(err=>{
+                toast.error(err)
                 console.log(err)
-                
             })
-            
         }
 
         return{
