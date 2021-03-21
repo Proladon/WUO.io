@@ -1,6 +1,6 @@
 <template>
   <router-link class="home-btn" to="/"><strong>WUO.io</strong></router-link>
-  <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link>
+  <!-- <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link> -->
   <p class="sub-title">Wut u ordering ?</p>
   <Nav />
   <Home v-if="$route.name === 'Home'" />
