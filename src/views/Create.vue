@@ -3,12 +3,12 @@
 
     <div class="quick-order" v-if="refKey === '' ">
       <h2>訂單建立</h2>
-      <input type="text" v-model="orderName" placeholder="訂單名稱">
+      <input class="std-input" type="text" v-model="orderName" placeholder="訂單名稱">
 
 
       <p><strong>建立快速選項</strong></p>
       <div class="input-container">
-        <input type="text" v-model="optionInput" placeholder="品項名稱" @keypress.enter="addOption">
+        <input class="std-input" type="text" v-model="optionInput" placeholder="品項名稱" @keypress.enter="addOption">
         <div class="add-btn" @click="addOption">新增</div>
       </div>
 
@@ -29,7 +29,7 @@
 
       <p class="warn"><strong>注意: 訂單創建24小時後將自動刪除</strong></p>
 
-      <div class="create-btn" @click="createOrder">創建訂單</div>
+      <div class="create-btn" @click="createOrder"><strong>創建訂單</strong></div>
     </div>
 
     <!-- After Create -->

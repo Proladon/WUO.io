@@ -2,12 +2,16 @@
 $dark: #2c3e50;
 $light: white;
 $light-green: rgb(95, 250, 173);
-input{
+
+.std-input{
+    padding: 10px;
     border-radius: 5px;
     border: solid 1px gray;
 }
 
 .btn{
+    cursor: pointer;
+    user-select: none;
     border-radius: 5px;
 }
 

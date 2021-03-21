@@ -1,6 +1,6 @@
 <template>
   <router-link class="home-btn" to="/"><strong>WUO.io</strong></router-link>
-  <!-- <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link> -->
+  <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link>
   <p class="sub-title">Wut u ordering ?</p>
   <Nav />
   <Home v-if="$route.name === 'Home'" />
@@ -24,7 +24,7 @@ export default defineComponent({
 
     onMounted((): void => {
       store.commit('UPDATE_RECENT')
-
+      
       ordersRef.get( ).then(snapshot => {
         if(snapshot.exists()){
           const allData = snapshot.val()
@@ -63,6 +63,8 @@ body{
   padding: 20px;
 }
 
+
+
 .home-btn{
   color: rgb(95, 250, 173);
   font-size: 50px;
@@ -84,5 +86,18 @@ body{
   color: slategray;
   margin-top: 0px;
   margin-bottom: 30px;
+}
+
+
+@media screen and (min-width: 740px) {
+  body{
+    padding-right: 100px;
+    padding-left: 100px;
+  }
+  
+  .sign-in-btn{
+    top: 40px;
+    right: 100px;
+  }
 }
 </style>
