@@ -30,7 +30,8 @@ export default defineComponent({
         const email = ref<string>('')
         const pass = ref<string>('')
 
-        const errorHandle = (err: any): void => {
+        // 使用者輸入檢查
+        const inputCheck = (err: any): void => {
             const e = err.code.split('/')[1]
             switch (e){
                 case 'invalid-email':
@@ -48,6 +49,7 @@ export default defineComponent({
             }
         }
 
+        // 註冊
         const signup = (): void => {
             if(email.value.trim()===''){
                 toast.warning('請輸入信箱')
@@ -61,22 +63,23 @@ export default defineComponent({
             promise.then(()=>{
                 toast.info("註冊成功!")
             }).catch(err => {
-                errorHandle(err)
+                inputCheck(err)
             })
         }
 
+        // 登入
         const signin = (): void => {
             const promise = db.auth().signInWithEmailAndPassword(email.value, pass.value)
             promise.then(()=>{
                 toast.info("登入成功!")
             }).catch(err=>{
-                errorHandle(err)
+                inputCheck(err)
             })
         }
 
         return{
             mode,
-            errorHandle,
+            inputCheck,
             signup,
             signin,
             email,
@@ -131,8 +134,6 @@ export default defineComponent({
     >span{
         color: $light-green;
     }
-
-    
 }
 
 </style>

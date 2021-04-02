@@ -1,8 +1,8 @@
 <template>
   <div class="auth-btn-container">
-    <p class="username">Hello {{username}}</p>
+    <p class="info">Hello <span class="username"><strong>Proladon</strong></span></p>
     <router-link class="btn auth" to="/auth"><strong>登入</strong></router-link>
-    <router-link class="btn " to="/"><strong>我的訂單</strong></router-link>
+    <router-link class="btn " to="/manage"><strong>我的訂單</strong></router-link>
   </div>
 
   <div class="app-title-container">
@@ -33,23 +33,23 @@ export default defineComponent({
     onMounted((): void => {
       store.commit('UPDATE_RECENT')
       
+      // 初始化: 獲取整個db資料，並銷毀過期訂單
       ordersRef.get( ).then(snapshot => {
         if(snapshot.exists()){
           const allData = snapshot.val()
 
+          // 檢查所有訂單，過期(>1天)則銷毀
           for(const data in allData){
             const create = new DateTime(new Date(allData[data].create)).date()
             const today = new DateTime(new Date()).date()
 
-            // const create = new DateTime(new Date(allData[data].create)).minute()
-            // const today = new DateTime(new Date()).minute()
-            
             if (today - create >= 1){
               db.database().ref('orders/' + data).remove()
             }
           }
         }
       })
+
     })
 
   }
@@ -71,13 +71,12 @@ body{
   padding: 20px;
 }
 
-
-
 .app-title-container{
   display: flex;
   flex-direction: column;
   padding: 10px;
   margin-bottom: 20px;
+  
   .title{
     font-size: 2.5em;
     text-decoration: none;
@@ -91,7 +90,6 @@ body{
 }
 
 
-
 .auth-btn-container{
   display: flex;
   top: 40px;
@@ -101,14 +99,14 @@ body{
   color: slategray;
   text-decoration: none;
 
-  .username{
+  .info{
     flex: 2;
     margin: 0;
     margin-right: 10px;
   }
 
-  .auth{
-
+  .username{
+    color: $light-green;
   }
 
   .btn{
@@ -116,8 +114,6 @@ body{
     margin-left: 10px;
   }
 }
-
-
 
 
 @media screen and (min-width: 740px) {

@@ -18,7 +18,7 @@
       <div class="order-form">
         <input type="text" v-model="userOrdering.data.username" placeholder="訂購人 (選填)">
         
-          <h4>快速選項</h4>
+        <h4>快速選項</h4>
         <div class="options-container" >
           <div class="option" 
             v-for="(option, index) in order.data.options" 
@@ -43,11 +43,8 @@
       </div>
     </div>
 
-    <OrderingInfo v-show="view === 2 " 
-      :orderData="order.data" :refKey="inputRefKey" />
+    <OrderingInfo v-show="view === 2 " :orderData="order.data" :refKey="inputRefKey" />
 
-
-  
   </div>
 </template>
 
@@ -69,6 +66,7 @@ export default defineComponent({
     const inputRefKey = ref<string>()
     const view = ref<number>(2)
     
+    // 使用者訂購輸入資料
     const userOrdering = reactive({
       data:{
         username:'',
@@ -77,6 +75,7 @@ export default defineComponent({
       }
     })
     
+    // 當前訂單資料
     const order = reactive({
       data: {
         name: 'None',
@@ -86,9 +85,12 @@ export default defineComponent({
     })
 
 
+
+    // 查找訂單
     const searchOrder = (): void => {
       const key = inputRefKey.value?.trim()
       router.push('/search/' + key)
+
       db.database().ref('orders/' + key).on('value', snapshot =>{
         if(!key || key === ''){
           toast.warning('請輸入訂單編號')
@@ -104,6 +106,8 @@ export default defineComponent({
       })
     }
 
+
+    // 新增快速選項項目
     const addToOrderings = (index: number): void=>{
       const selectOption = order.data.options[index]
       const orderings = userOrdering.data.ordering
@@ -111,6 +115,8 @@ export default defineComponent({
       userOrdering.data.ordering += selectOption + '、'
     }
 
+
+    // 新增訂購至當前訂單
     const updateOrder = (): void => {
       if(order.data.name === 'None') {
         toast.error('訂單不存在')
@@ -121,6 +127,7 @@ export default defineComponent({
         toast.error('訂購品項請勿留空')
         return
       }
+
       const orderRef = db.database().ref('orders/' + inputRefKey.value)
       orderRef.get().then(snapshot=>{
         if (snapshot.val().orderings) {

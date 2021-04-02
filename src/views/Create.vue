@@ -80,14 +80,15 @@ import db from '../db'
 import axios from 'axios'
 
 
-
 export default defineComponent({
   name: 'Create',
+
   setup(){
     const store = useStore()
     const recent = computed(()=>{
       return store.state.recent
     })
+    
     const customImg = ref<string>('')
     const toast = useToast()
     const orderName = ref<string>('')
@@ -98,16 +99,18 @@ export default defineComponent({
     
     const refKey = ref<string>('')
     const qrcodeUrl =ref<string>('')
-    
     const ordersRef = db.database().ref('orders')
 
-
+    
+    // 創建訂單
     const createOrder = (): void => {
+      // 訂單名不得為空
       if(orderName.value.trim() === ''){
         toast.error('請輸入訂單名稱')
         return
       }
 
+      // 創建新訂單
       const newOrder = {
         name: orderName.value,
         create: (new Date()).toString(),
@@ -115,25 +118,28 @@ export default defineComponent({
         options: orderOptions.options,
       }
 
+      // 儲存訂單至db功能
       const pushDB = ()=>{
-        const order = ordersRef.push(newOrder)
+        const order = ordersRef.push(newOrder) //儲存訂單
         refKey.value = (order.key as string);
   
+        // 生成QRCode
         const base = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://proladon.github.io/WUO.io/%23/search/'
-        
         qrcodeUrl.value = require('../assets/loading.gif')
         axios.get(base + refKey.value).then((res: any)=>{
           qrcodeUrl.value =  res.config.url
         })
-  
+
+        // 更新 localStorage 訂單
         store.commit('ADD_RECENT', {
           name: newOrder.name,
           key: refKey.value
         })
       }
       
+      // 如果有圖片，創建訂單同時上傳圖片到 Imgbb
       const upload = (document.getElementById('image-upload') as any)
-      
+
       if(customImg.value !== ''){
         const formData = new FormData();
         formData.append("image", upload.files[0]);
@@ -160,9 +166,12 @@ export default defineComponent({
     }
 
 
+    // 新增訂單快速選項項目
     const addOption = (): void => {
       const option = optionInput.value.trim()
+      
       if(orderOptions.options.includes(option)) toast.warning('品項已存在')
+      
       if (option !== '' && !orderOptions.options.includes(option)) {
         orderOptions.options.push(option)
         optionInput.value = ''
@@ -170,11 +179,20 @@ export default defineComponent({
     }
 
 
+    // 移除訂單快速選項項目
     const removeOption = (index: number): void => {
       orderOptions.options.splice(index, 1)
     }
     
 
+    // 刪除 localStorage 訂單
+    const deleteRecnt = (index: number): void => {
+      store.commit('REMOVE_RECENT', index)
+      store.commit('UPDATE_RECENT')
+    }
+
+
+    // 複製訂單網址
     const copyToClipboard = (type: string): void => {
       if(type === 'link'){
         copy('https://proladon.github.io/WUO.io/#/search/' + refKey.value)
@@ -186,16 +204,14 @@ export default defineComponent({
     }
 
 
-    const deleteRecnt = (index: number): void => {
-      store.commit('REMOVE_RECENT', index)
-      store.commit('UPDATE_RECENT')
-    }
-
+    // 複製訂單編號
     const copyKey = (key: string): void => {
       copy(key)
       toast.success('已複製訂單編號')
     }
 
+
+    // 上傳圖片 (尚未發送API)
     const uploadImg = async (e: Event | any) =>{
       const file = e.target.files[0]
       if(file){
@@ -209,6 +225,7 @@ export default defineComponent({
       }
     }
 
+    // 取消圖片
     const cancelImg = (): void => {
       customImg.value = ''
     }
