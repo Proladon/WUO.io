@@ -1,7 +1,15 @@
 <template>
-  <router-link class="home-btn" to="/"><strong>WUO.io</strong></router-link>
-  <!-- <router-link class="sign-in-btn" to="/auth"><strong>登入</strong></router-link> -->
-  <p class="sub-title">Wut u ordering ?</p>
+  <div class="auth-btn-container">
+    <p class="username">Hello {{username}}</p>
+    <router-link class="btn auth" to="/auth"><strong>登入</strong></router-link>
+    <router-link class="btn " to="/"><strong>我的訂單</strong></router-link>
+  </div>
+
+  <div class="app-title-container">
+    <router-link class="title" to="/"><strong>WUO.io</strong></router-link>
+    <p class="sub-title">Wut u ordering ?</p>
+  </div>
+  
   <Nav />
   <Home v-if="$route.name === 'Home'" />
   <router-view v-if="$route.name !== 'Home'" />
@@ -48,7 +56,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 html{
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: $light;
@@ -65,34 +73,57 @@ body{
 
 
 
-.home-btn{
-  color: rgb(95, 250, 173);
-  font-size: 50px;
-  text-decoration: none;
+.app-title-container{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-bottom: 20px;
+  .title{
+    font-size: 2.5em;
+    text-decoration: none;
+    color: $light-green;
+    margin: 0;
+  }
+
+  .sub-title{
+    margin: 0;
+  }
 }
 
-.sign-in-btn{
-  position: absolute;
+
+
+.auth-btn-container{
+  display: flex;
   top: 40px;
   right: 30px;
   padding: 10px;
   border-radius: 5px;
   color: slategray;
   text-decoration: none;
+
+  .username{
+    flex: 2;
+    margin: 0;
+    margin-right: 10px;
+  }
+
+  .auth{
+
+  }
+
+  .btn{
+    color: slategray;
+    margin-left: 10px;
+  }
 }
 
-.sub-title{
-  letter-spacing: 4px;
-  color: slategray;
-  margin-top: 0px;
-  margin-bottom: 30px;
-}
+
 
 
 @media screen and (min-width: 740px) {
   body{
-    padding-right: 100px;
-    padding-left: 100px;
+    padding-right: 200px;
+    padding-left: 200px;
   }
   
   .sign-in-btn{
